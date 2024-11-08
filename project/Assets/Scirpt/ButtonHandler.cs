@@ -44,13 +44,6 @@ public class ButtonHandler : MonoBehaviour
     }
 
 
-    private void Update()
-    {
-        if (GasPressed)
-        {
-            movement.Gas();
-        }
-    }
 
 
 }

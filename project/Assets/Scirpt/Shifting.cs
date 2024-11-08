@@ -30,17 +30,7 @@ public class Shifting : MonoBehaviour
 
     void Update()
     {
-        if(buttonHandler != null)
-        {
-            if (buttonHandler.GasPressed)
-            {
-                IncreaseRpm();
-            }
-            else
-            {
-                DecreaseRpm();
-            }
-        }
+      
 
 
         if (rpmClock.anchoredPosition.y > 700f)
@@ -50,6 +40,21 @@ public class Shifting : MonoBehaviour
 
     }
 
+    private void FixedUpdate()
+    {
+        if (buttonHandler != null)
+        {
+            if (buttonHandler.GasPressed)
+            {
+            }
+            else
+            {
+                DecreaseRpm();
+            }
+        }
+        IncreaseRpm();
+
+    }
 
 
 
@@ -60,9 +65,9 @@ public class Shifting : MonoBehaviour
         ShiftCount++;
         ShiftingDetection();
         movement.SetAccelerationPower(ShiftCount);
-        if(rpmClock.anchoredPosition.y > 350f)
+        if (rpmClock.anchoredPosition.y > 350f)
         {
-            Vector3 rpm =new Vector3(0f,rpmClock.anchoredPosition.y/2f,0);
+            Vector3 rpm = new Vector3(0f, rpmClock.anchoredPosition.y / 2f, 0);
             rpmClock.anchoredPosition = rpm;
         }
         Debug.Log(ShiftCount);
@@ -70,11 +75,11 @@ public class Shifting : MonoBehaviour
 
     private void ShiftingDetection()
     {
-        int lastBorder =0;
+        int lastBorder = 0;
 
         foreach (float border in shiftingLineBorder)
         {
-            if(rpmClock.anchoredPosition.y < border)
+            if (rpmClock.anchoredPosition.y < border)
             {
                 break;
             }
@@ -93,7 +98,7 @@ public class Shifting : MonoBehaviour
     {
 
         Vector3 rpmPos = rpmClock.anchoredPosition;
-        rpmPos.y = rpmClock.anchoredPosition.y + Time.deltaTime * rpmIncreasePower;
+        rpmPos.y = rpmClock.anchoredPosition.y + rpmIncreasePower * Time.fixedDeltaTime; // increases by 4 units per frame 1sec=200
         if (rpmClock.anchoredPosition.y >= 870) rpmPos.y = 870f;
 
         rpmClock.anchoredPosition = rpmPos;
@@ -103,10 +108,10 @@ public class Shifting : MonoBehaviour
     {
 
         Vector3 rpmPos = rpmClock.anchoredPosition;
-        rpmPos.y = rpmClock.anchoredPosition.y - Time.deltaTime *rpmIncreasePower/10f;
+        rpmPos.y = rpmClock.anchoredPosition.y - Time.fixedDeltaTime * rpmIncreasePower / 10f;
         if (rpmClock.anchoredPosition.y <= 0) rpmPos.y = 0f;
         rpmClock.anchoredPosition = rpmPos;
-        
+
     }
 
 }

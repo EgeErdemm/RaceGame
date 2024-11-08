@@ -2,61 +2,55 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Movement : MonoBehaviour
+public class Movement_Opponent : MonoBehaviour
 {
 
-    public static Movement Instance;
-
-    private ButtonHandler buttonHandler;
+    public static Movement_Opponent Instance;
 
     private Rigidbody rb;
 
     [SerializeField] private float accelerationPower;
     private float initialAccelerationPower;
 
+
+
     [SerializeField] private float carTopSpeed;
     private Vector3 maxVelocity;
 
     private void Awake()
     {
-        if (Instance != null && Instance != this)
+        if(Instance !=null && Instance != this)
         {
-            Destroy(Instance);
+            Destroy(gameObject);
         }
         else
         {
             Instance = this;
-            DontDestroyOnLoad(Instance);
         }
     }
 
 
-
     void Start()
     {
-        buttonHandler = ButtonHandler.Instance;
         rb = GetComponent<Rigidbody>();
         initialAccelerationPower = accelerationPower;
         maxVelocity = new Vector3(0f, 0f, carTopSpeed);
     }
 
 
+
     void Update()
     {
-        //Debug.Log("Current Speed: " + rb.velocity.magnitude);
         if (rb.velocity.magnitude > maxVelocity.magnitude)
         {
             rb.velocity = maxVelocity;
         }
+        //Debug.Log("opponent velocity" + rb.velocity.z);
     }
 
     private void FixedUpdate()
     {
-        if (buttonHandler.GasPressed)
-        {
-        }
         Gas();
-
     }
 
 
@@ -66,21 +60,35 @@ public class Movement : MonoBehaviour
         rb.AddForce(forwardForce, ForceMode.Acceleration);
     }
 
-
     public void SetAccelerationPower(int shift)
     {
         accelerationPower = initialAccelerationPower / shift;
     }
 
-    public void VelocityReward(int border)
+    public void VelocityReward(float rpmValue)
     {
-        if(border < 3)
+        if(rpmValue>=350 && rpmValue<650)
         {
             Vector3 velocity = rb.velocity;
-            velocity.z = velocity.z + 10 * border;
-            rb.velocity = velocity; 
+            velocity.z = velocity.z + 10;
+            rb.velocity = velocity;
+            Debug.Log("Rewarded Orange Line");
 
         }
+        else if(rpmValue>=650 && rpmValue <= 700)
+        {
+            Vector3 velocity = rb.velocity;
+            velocity.z = velocity.z + 20;
+            rb.velocity = velocity;
+            Debug.Log("Rewarded Green Line");
+        }
+        else if (rpmValue > 700)
+        {
+            StopAcceleration();
+            Debug.Log("Stop Accelerate");
+
+        }
+
     }
 
     public void StopAcceleration()
